@@ -1,0 +1,6 @@
+# ignore all Outcomes
+Outputs/
+
+# ignore Saved_Data.mat
+Saved_Data.mat
+
