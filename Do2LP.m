@@ -32,8 +32,8 @@ end
 function Distance=LOSDistance(map,xl,yl,HT,HR);
     D=12756000;
     global alpha;
-	deltaW=100;
-	deltaH=100;
+	deltaW=200;
+	deltaH=200;
 	alpha=-power(10,10);%what for?
 	N=length(xl);    %not the same N
 

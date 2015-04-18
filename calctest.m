@@ -1,6 +1,6 @@
 function calctest(index)
 	load('settings.mat');
-	load('Mapdata_Zero.mat');
+	load('Mapdata50.mat');
 	load('Saved_Data.mat');
 	load('AntennaData.mat');
 	load('Converted.mat');
@@ -12,16 +12,16 @@ function calctest(index)
 	HT=AntennaData.Height(index);
 	Freq=AntennaData.Freq(index);
 	disp('load data');
-
+    
 	if TX-settings.scale/2<1
 		ClipX=1;
-	elseif TX+settings.scale/2>724
+	elseif TX+settings.scale/2>362
 		ClipX=324;
 	else ClipX=TX-settings.scale/2;
 	end
 	if TY-settings.scale/2<1
 		ClipY=1;
-	elseif TY+settings.scale/2>1117
+	elseif TY+settings.scale/2>559
 		ClipY=717;
 	else ClipY=TY-settings.scale/2;
 	end
@@ -30,8 +30,9 @@ function calctest(index)
 	[SX,SY]=find(scattermap(ClipX:(ClipX+settings.scale),ClipY:(ClipY+settings.scale))>0);
 	disp('generate scatterpoints');
 
-	for RX=ClipX:(ClipX+1)
-		for RY=ClipY:(ClipY+1)
+	for RX=ClipX:(ClipX+settings.scale)
+		for RY=ClipY:(ClipY+settings.scale)
+            tic;
 			[TD,DD,BD,RD]=LOSDisMatrix(TX,TY,SX,SY,RX,RY,HT,1.8,Mapdata);
 			disp('form TDBR');
 			TaoT=TD/(3*10^8);
@@ -61,6 +62,7 @@ function calctest(index)
 			disp(RY);
 			disp(index);
 			save Saved_Data.mat Saved_Data;
+            toc;
 		end
 		% show progress
 	end

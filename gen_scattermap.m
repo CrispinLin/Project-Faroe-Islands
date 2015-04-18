@@ -5,7 +5,7 @@
 function gen_scattermap
 % 	global settings;
     load('settings.mat');
-	load('Mapdata_Zero.mat');
+	load('Mapdata50.mat');
 	map=Mapdata>0;
     mask=zeros(size(Mapdata));
     mask(1:settings.density:end,1:settings.density:end)=1;

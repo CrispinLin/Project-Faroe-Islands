@@ -1,5 +1,5 @@
 function peakDetect
-    load('Mapdata_Zero.mat');
+    load('Mapdata50.mat');
 	[mapWidth,mapHeight]=size(Mapdata)
 	peakout=zeros(mapHeight,mapWidth);
 	temp=zeros(mapHeight,mapWidth);
@@ -66,7 +66,9 @@ function peakDetect
     
 %   -2- map 
 % ====
-    peak=peakout>0;
+    peak=peakout(1:2:end,1:2:end)>0;
+    peak=kron(peak,[1,0;0,0]);
+    peak=peak(1:mapHeight,1:mapWidth);
 % ====
 %   -2-
     save('peak.mat','peak');
