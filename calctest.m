@@ -50,8 +50,8 @@ function calctest(index)
 
 	% profiling +settings.scale/2
 
-	for RX=ClipX:(ClipX+2)
-		for RY=ClipY:(ClipY+2)
+	for RX=ClipX:(ClipX++settings.scale/2)
+		for RY=ClipY:(ClipY++settings.scale/2)
 
 			tic;
 			disp(RX);
