@@ -50,44 +50,49 @@ function calctest(index)
 
 	% profiling +settings.scale/2
 
-	for RX=ClipX:(ClipX++settings.scale/2)
+	for RX=Saved_Data.x:(ClipX++settings.scale/2)
 		for RY=ClipY:(ClipY++settings.scale/2)
+			if Saved_Data.y<=ClipY	
+				tic;
+				disp(RX);
+				disp(RY);
+				disp(index);
 
-			tic;
-			disp(RX);
-			disp(RY);
-			disp(index);
+				TD=zeros(N,1);
+				DD=0;
+				RD=zeros(1,N);
+				[TD,DD,RD]=Form_3Matrix(TX,TY,SX,SY,RX,RY,HT,1.8,Mapdata);
+				TaoT=TD/(3*10^8);
+				TaoD=DD/(3*10^8);
+				TaoR=RD/(3*10^8);
 
-			TD=zeros(N,1);
-			DD=0;
-			RD=zeros(1,N);
-			[TD,DD,RD]=Form_3Matrix(TX,TY,SX,SY,RX,RY,HT,1.8,Mapdata);
-			TaoT=TD/(3*10^8);
-			TaoD=DD/(3*10^8);
-			TaoR=RD/(3*10^8);
-
-			[TgohneF,DgohneF,RgohneF]=FormGohneF(TD,DD,BD,RD,TaoT,TaoD,TaoB,TaoR,gain);
-			disp('begin parallel loop');
-			parfor n=1:1:loop;
-				F=Fmin+deltaF*n;
-				D=DgohneF/F.*exp(-1j*2*pi.*TaoD*F);
-				T=TgohneF/sqrt(F).*exp(-1j*2*pi.*TaoT*F);
-				B=BgohneF.*exp(-1j*2*pi.*TaoB*F);
-				R=RgohneF/sqrt(F).*exp(-1j*2*pi.*TaoR*F);
-				H(n)=D+R/(eye(N)-B)*T;
+				[TgohneF,DgohneF,RgohneF]=FormGohneF(TD,DD,BD,RD,TaoT,TaoD,TaoB,TaoR,gain);
+				disp('begin parallel loop');
+				parfor n=1:1:loop;
+					F=Fmin+deltaF*n;
+					D=DgohneF/F.*exp(-1j*2*pi.*TaoD*F);
+					T=TgohneF/sqrt(F).*exp(-1j*2*pi.*TaoT*F);
+					B=BgohneF.*exp(-1j*2*pi.*TaoB*F);
+					R=RgohneF/sqrt(F).*exp(-1j*2*pi.*TaoR*F);
+					H(n)=D+R/(eye(N)-B)*T;
+				end
+				disp('parallel loop ended')
+				Hex=[H,fliplr(H)];
+				Hex=Hex.*HannWindow;
+				h=ifft(Hex);
+				h=h(1:length(h)/2);
+				Saved_Data.XYA(RX,RY,index,:)=[h];
+				if rem(RY,5)==0
+					disp('saving');
+					% save the data and the calculation status every 5 points
+					Saved_Data.x       =RX;
+					Saved_Data.y       =RY;
+					Saved_Data.Antenna =index;
+					save Saved_Data.mat Saved_Data;
+					disp('saved');
+				end
+				toc;
 			end
-			disp('parallel loop ended')
-			Hex=[H,fliplr(H)];
-			Hex=Hex.*HannWindow;
-			h=ifft(Hex);
-			h=h(1:length(h)/2);
-			Saved_Data.XYA(RX,RY,index,:)=[h];
-			if rem(RY,5)==0
-				disp('saving');
-				save Saved_Data.mat Saved_Data;
-				disp('saved');
-			end
-			toc;
 		end
 		% show progress
 	end
