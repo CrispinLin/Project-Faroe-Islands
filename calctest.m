@@ -20,7 +20,7 @@ function calctest(index)
 	else ClipX=TX-settings.scale/2;
 	end
 	if TY-settings.scale/2<1
-		ClipY=1;
+		ClipY=1+;
 	elseif TY+settings.scale/2>1117
 		ClipY=717;
 	else ClipY=TY-settings.scale/2;
@@ -48,11 +48,11 @@ function calctest(index)
 	deltaF=(40/loop)*10^6;
 	HannWindow=fftshift(hann(2*loop)');
 
-	% profiling +settings.scale/2
+	% profiling +settings.scale
 
-	for RX=Saved_Data.x:(ClipX+settings.scale/2)
-		for RY=ClipY:(ClipY+settings.scale/2)
-			if Saved_Data.y<=RY
+	for RX=ClipX:(ClipX+settings.scale)
+		for RY=ClipY:(ClipY+settings.scale)
+			if (Saved_Data.x<=RX && Saved_Data.y<=RY)
 				tic;
 				disp(RX);
 				disp(RY);
