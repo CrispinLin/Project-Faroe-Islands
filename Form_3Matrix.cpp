@@ -17,7 +17,11 @@ double Do2LP(double *map,double X1,double Y1,double X2,double Y2,double HT,doubl
 		N =fabs(Y1-Y2);
 	}
 
-	double xl[210],yl[210];
+	double *xl,*yl;
+	xl=new double[N+1];
+	yl=new double[N+1]; 
+
+
 	
 	if (N>=1)
 	{
@@ -33,6 +37,8 @@ double Do2LP(double *map,double X1,double Y1,double X2,double Y2,double HT,doubl
 	}
 	else
 	{
+		delete []xl;
+		delete []yl;
 		return 0.0;
 	}
 
@@ -57,6 +63,8 @@ double Do2LP(double *map,double X1,double Y1,double X2,double Y2,double HT,doubl
 	
 	if (N==2)
 	{
+		delete []xl;
+		delete []yl;
 		return c;
 	}
 
@@ -83,10 +91,14 @@ double Do2LP(double *map,double X1,double Y1,double X2,double Y2,double HT,doubl
 
 			if (HC<(D/2.0+map[mapindex]))
 			{
+				delete []xl;
+				delete []yl;
 				return 0.0;
 			}
 		}
 	}
+	delete []xl;
+	delete []yl;
 	return c;
 }
 

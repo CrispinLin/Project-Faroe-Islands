@@ -20,7 +20,7 @@ function calctest(index)
 	else ClipX=TX-settings.scale/2;
 	end
 	if TY-settings.scale/2<1
-		ClipY=1+;
+		ClipY=1;
 	elseif TY+settings.scale/2>1117
 		ClipY=717;
 	else ClipY=TY-settings.scale/2;
@@ -94,6 +94,7 @@ function calctest(index)
 				toc;
 			end
 		end
+		Saved_Data.y=ClipY;
 		% show progress
 	end
 end
