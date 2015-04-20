@@ -2,8 +2,7 @@
 #include "math.h"
 
 
-
-double Do2LP(double *map,double X1,double Y1,double X2,double Y2,double HT,double HR,int MapM)
+double Do2lp(double *map,double X1,double Y1,double X2,double Y2,double HT,double HR,int MapM)
 {
 
 // makeline
@@ -17,7 +16,7 @@ double Do2LP(double *map,double X1,double Y1,double X2,double Y2,double HT,doubl
 		N =fabs(Y1-Y2);
 	}
 
-	double xl[N+1],yl[N+1];
+	double xl[210],yl[210];
 	
 	if (N>=1)
 	{
@@ -33,6 +32,7 @@ double Do2LP(double *map,double X1,double Y1,double X2,double Y2,double HT,doubl
 	}
 	else
 	{
+		// mexPrintf(" =0.1 ");
 		return 0.0;
 	}
 
@@ -44,11 +44,12 @@ double Do2LP(double *map,double X1,double Y1,double X2,double Y2,double HT,doubl
 	#define pi 3.1416
 	double l =hypot((xl[0]-xl[N])*deltaW,(yl[0]-yl[N])*deltaH);
 	double CosC=cos(l/D*2);
+
 	//  map(i,j)-->data(i+M*j)
 
-	int mapindex=round(xl[0])+MapM*round(yl[0]);
+	int mapindex=ceil(xl[0]+0.5)+MapM*ceil(yl[0]+0.5);
 	double a = D/2.0+map[mapindex]+HT;
-	mapindex=round(xl[N])+MapM*round(yl[N]);
+	mapindex=ceil(xl[N]+0.5)+MapM*ceil(yl[N]+0.5);
 	double b = D/2.0+map[mapindex]+HR;
 	double c = sqrt(pow(a,2)+pow(b,2)-2*a*b*CosC);
 	
@@ -74,7 +75,7 @@ double Do2LP(double *map,double X1,double Y1,double X2,double Y2,double HT,doubl
 		for (int ct=1;ct<=N-1;ct++)
 		{
 			HC=a*SinB/sin(pi-dR/D*2*ct-B);
-			mapindex=(round(xl[ct])+MapM*round(yl[ct]));
+			mapindex=(ceil(xl[ct]+0.5)+MapM*ceil(yl[ct]+0.5));
 
 			// mexPrintf("CT=%d\n",ct);
 			// mexPrintf("xl[ct]=%f,yl[ct]=%f\n",xl[ct],yl[ct]);//debugging
@@ -91,47 +92,40 @@ double Do2LP(double *map,double X1,double Y1,double X2,double Y2,double HT,doubl
 }
 
 
-
-
 /**
  * input:
  * @param nlhs output no
- * @param plhs output pointer(TD,DD,RD)
+ * @param plhs output pointer([TD,DD,BD,RD])
  * @param nrhs input no
- * @param prhs input pointer(TX,TY,SX,SY,RX,RY,HT,HR,map,TD,DD,RD)
+ * @param prhs input pointer(TX,TY,SX,SY,RX,RY,HT,HR,map)
  */
 void mexFunction(int nlhs,mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
-	double TX,TY,*SX,*SY,RX,RY,HT,HR,*map;
+	double *SX,*SY,*map;
 	int ScatterLen,MapM;
-	TX         =mxGetScalar(prhs[0]);
-	TY         =mxGetScalar(prhs[1]);
-	SX         =mxGetPr(prhs[2]);
-	SY         =mxGetPr(prhs[3]);
-	ScatterLen =mxGetM(prhs[2]);
-	RX         =mxGetScalar(prhs[4]);
-	RY         =mxGetScalar(prhs[5]);
-	HT         =mxGetScalar(prhs[6]);
-	HR         =mxGetScalar(prhs[7]);
-	map        =mxGetPr(prhs[8]);
-	MapM       =mxGetM(prhs[8]); //行数
+	map        =mxGetPr(prhs[0]);
+	MapM       =mxGetM(prhs[0]); //行数
 //  map(i,j)-->data(j*M+i)
 
-	double *TD,*DD,*RD;
-	plhs[0]=mxCreateDoubleMatrix(ScatterLen,1,mxREAL);
-	plhs[1]=mxCreateDoubleMatrix(1,1,mxREAL);
-	plhs[2]=mxCreateDoubleMatrix(1,ScatterLen,mxREAL);
+	SX         =mxGetPr(prhs[1]);
+	SY         =mxGetPr(prhs[2]);
+	ScatterLen =mxGetScalar(prhs[3]);
 
-	TD         =mxGetPr(plhs[0]);
-	DD         =mxGetPr(plhs[1]);
-	RD         =mxGetPr(plhs[2]);
+	double *BD;
+	// BD         =mxGetPr(prhs[4]);
+
+	plhs[0]=mxCreateDoubleMatrix(ScatterLen,ScatterLen,mxREAL);
+	BD=mxGetPr(plhs[0]);
+
 
 	for (int i=0;i<ScatterLen;i++)
 	{
-		TD[i]=Do2LP(map,TX,TY,SX[i],SY[i],HT,0,MapM);
-		RD[i]=Do2LP(map,SX[i],SY[i],RX,RY,0,HR,MapM);
+		for (int j=i+1;j<ScatterLen;j++)
+		{
+			// not overflow  PROBLEM is in Do2lp
+			// mexPrintf("SX=%f,SY=%f\n",SX[i],SY[i],SX[j],SY[j]);
+			BD[i+ScatterLen*j]= Do2lp(map,SX[i],SY[i],SX[j],SY[j],0,0,MapM);
+		}
 	}
-
-	DD[0]=Do2LP(map,TX,TY,RX,RY,HT,HR,MapM);
 
 }
