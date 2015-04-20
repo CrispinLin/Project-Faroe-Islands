@@ -50,9 +50,9 @@ function calctest(index)
 
 	% profiling +settings.scale/2
 
-	for RX=Saved_Data.x:(ClipX++settings.scale/2)
-		for RY=ClipY:(ClipY++settings.scale/2)
-			if Saved_Data.y<=ClipY	
+	for RX=Saved_Data.x:(ClipX+settings.scale/2)
+		for RY=ClipY:(ClipY+settings.scale/2)
+			if Saved_Data.y<=ClipY+settings.scale/2
 				tic;
 				disp(RX);
 				disp(RY);
