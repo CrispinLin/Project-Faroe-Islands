@@ -52,7 +52,7 @@ function calctest(index)
 
 	for RX=Saved_Data.x:(ClipX+settings.scale/2)
 		for RY=ClipY:(ClipY+settings.scale/2)
-			if Saved_Data.y<=ClipY+settings.scale/2
+			if Saved_Data.y<=RY
 				tic;
 				disp(RX);
 				disp(RY);
