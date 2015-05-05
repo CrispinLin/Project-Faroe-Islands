@@ -46,7 +46,7 @@ function calctest(index)
 	Fmin=(Freq-20)*10^6;
 	loop=2000;
 	deltaF=(40/loop)*10^6;
-	HannWindow=fftshift(hann(2*loop)');
+	HannWindow=hann(loop)';
 
 	% profiling +settings.scale
 
@@ -77,10 +77,10 @@ function calctest(index)
 					H(n)=D+R/(eye(N)-B)*T;
 				end
 				disp('parallel loop ended')
-				Hex=[H,fliplr(H)];
-				Hex=Hex.*HannWindow;
+				% Hex=[H,fliplr(H)];
+				% Hex=H.*HannWindow;
 				h=ifft(Hex);
-				h=h(1:length(h)/2);
+				% h=h(1:length(h)/2);
 				Saved_Data.XYA(RX,RY,index,:)=[h];
 				if rem(RY,5)==0
 					disp('saving');
