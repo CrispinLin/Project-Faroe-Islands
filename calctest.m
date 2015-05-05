@@ -43,15 +43,18 @@ function calctest(index)
 	odi=kron(odi',ones(1,N));
 	BgohneF(BD~=0)=gain./odi(BD~=0);
 
-	Fmin=(Freq-20)*10^6;
+	Bandwidth=20
+
+	Fmin=(Freq-Bandwidth/2)*10^6;
 	loop=2000;
-	deltaF=(40/loop)*10^6;
+	deltaF=(Bandwidth/loop)*10^6;
 	HannWindow=hann(loop)';
+
 
 	% profiling +settings.scale
 
-	for RX=ClipX:(ClipX+settings.scale)
-		for RY=ClipY:(ClipY+settings.scale)
+	for RX=ClipX:5:(ClipX+settings.scale)
+		for RY=ClipY:5:(ClipY+settings.scale)
 			if (Saved_Data.x<=RX && Saved_Data.y<=RY)
 				tic;
 				disp(RX);
@@ -77,12 +80,10 @@ function calctest(index)
 					H(n)=D+R/(eye(N)-B)*T;
 				end
 				disp('parallel loop ended')
-				% Hex=[H,fliplr(H)];
-				% Hex=H.*HannWindow;
+				Hex=H.*HannWindow;
 				h=ifft(Hex);
-				% h=h(1:length(h)/2);
-				Saved_Data.XYA(RX,RY,index,:)=[h];
-				if rem(RY,5)==0
+				Saved_Data.XYA(RX,RY,index,:)=h;
+				if rem(RY-1,25)==0
 					disp('saving');
 					% save the data and the calculation status every 5 points
 					Saved_Data.x       =RX;
