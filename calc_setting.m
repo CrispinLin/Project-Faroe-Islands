@@ -20,5 +20,5 @@ function calc_setting(index)
 
 	Saved_Data.x=ClipX;
 	Saved_Data.y=ClipY;
-	save Saved_Data.mat
+	save Saved_Data.mat Saved_Data
 end

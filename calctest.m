@@ -27,7 +27,7 @@ function calctest(index)
 	end
 	disp('restrict the clip in the map');
 
-	[SX,SY]=find(scattermap(ClipX:(ClipX+settings.scale),ClipY:(ClipY+settings.scale))>0);
+	[SY,SX]=find(scattermap(ClipY:(ClipY+settings.scale),ClipX:(ClipX+settings.scale))>0);
 	disp('generate scatterpoints');
 	
     gain=0.8
@@ -89,7 +89,7 @@ function calctest(index)
 					Saved_Data.x       =RX;
 					Saved_Data.y       =RY;
 					Saved_Data.Antenna =index;
-					save Saved_Data.mat Saved_Data;
+					save Saved_Data.mat Saved_Data -v7.3;
 					disp('saved');
 				end
 				toc;
