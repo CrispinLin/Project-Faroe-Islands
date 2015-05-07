@@ -82,7 +82,7 @@ function calctest(index)
 				disp('parallel loop ended')
 				Hex=H.*HannWindow;
 				h=ifft(Hex);
-				Saved_Data.XYA(RX,RY,index,:)=h;
+				Saved_Data.XYA(RX,RY,index,:)=[h];
 				if rem(RY-ClipY,25)==0
 					disp('saving');
 					% save the data and the calculation status every 5 points
