@@ -11,7 +11,7 @@ function calctest(index)
 	TY=Converted.Y(index);
 	HT=AntennaData.Height(index);
 	Freq=AntennaData.Freq(index);
-	disp('load data');
+	% disp('load data');
 
 	if TX-settings.scale/2<1
 		ClipX=1;
@@ -25,10 +25,10 @@ function calctest(index)
 		ClipY=717;
 	else ClipY=TY-settings.scale/2;
 	end
-	disp('restrict the clip in the map');
+	% disp('restrict the clip in the map');
 
 	[SY,SX]=find(scattermap(ClipY:(ClipY+settings.scale),ClipX:(ClipX+settings.scale))>0);
-	disp('generate scatterpoints');
+	% disp('generate scatterpoints');
 	
     gain=0.8
     
@@ -49,17 +49,17 @@ function calctest(index)
 	loop=1;
 	% deltaF=(Bandwidth/loop)*10^6;
 	% HannWindow=hann(loop)';
-
+	F=Freq;
 
 	% profiling +settings.scale
 
 	for RX=ClipX:5:(ClipX+settings.scale)
 		for RY=ClipY:5:(ClipY+settings.scale)
-			if (Saved_Data.x<=RX && Saved_Data.y<=RY)
+			% if (Saved_Data.x<=RX && Saved_Data.y<=RY)
 				tic;
-				disp(RX);
-				disp(RY);
-				disp(index);
+				% disp(RX);
+				% disp(RY);
+				% disp(index);
 
 				TD=zeros(N,1);
 				DD=0;
@@ -70,33 +70,33 @@ function calctest(index)
 				TaoR=RD/(3*10^8);
 
 				[TgohneF,DgohneF,RgohneF]=FormGohneF(TD,DD,BD,RD,TaoT,TaoD,TaoB,TaoR,gain);
-				disp('begin parallel loop');
+				% disp('begin parallel loop');
 				% for n=1:1:loop;
 					% F=Fmin+deltaF*n;
-					F=Freq;
+					
 					D=DgohneF/F.*exp(-1j*2*pi.*TaoD*F);
 					T=TgohneF/sqrt(F).*exp(-1j*2*pi.*TaoT*F);
 					B=BgohneF.*exp(-1j*2*pi.*TaoB*F);
 					R=RgohneF/sqrt(F).*exp(-1j*2*pi.*TaoR*F);
 					H=D+R/(eye(N)-B)*T;
 				% end
-				disp('parallel loop ended')
+				% disp('parallel loop ended')
 				% Hex=H.*HannWindow;
 				% h=ifft(Hex);
 				Saved_Data.XYA(RX,RY,index,:)=[H];
-				if rem(RY-ClipY,25)==0
-					disp('saving');
-					% save the data and the calculation status every 5 points
-					Saved_Data.x       =RX;
-					Saved_Data.y       =RY;
-					Saved_Data.Antenna =index;
-					save Saved_Data.mat Saved_Data -v7.3;
-					disp('saved');
-				end
+				% if rem(RY-ClipY,25)==0
+					% disp('saving');
+				% 	% save the data and the calculation status every 5 points
+				% 	Saved_Data.x       =RX;
+				% 	Saved_Data.y       =RY;
+				% 	Saved_Data.Antenna =index;
+				% 	save Saved_Data.mat Saved_Data -v7.3;
+					% disp('saved');
+				% end
 				toc;
-			end
+			% end
 		end
-		Saved_Data.y=ClipY;
+		% Saved_Data.y=ClipY;
 		% show progress
 	end
 	save Saved_Data.mat Saved_Data -v7.3;
