@@ -1,4 +1,4 @@
-function [TgohneF,DgohneF,BgohneF,RgohneF]=FormGohneF(TD,DD,BD,RD,TaoT,TaoD,TaoB,TaoR,gain);
+function [TgohneF,DgohneF,RgohneF]=FormGohneF(TD,DD,BD,RD,TaoT,TaoD,TaoB,TaoR,gain);
 	% g=zeros(N,N);
 	% % D
 	% if (Dis(1,N)~=0)
@@ -35,10 +35,10 @@ function [TgohneF,DgohneF,BgohneF,RgohneF]=FormGohneF(TD,DD,BD,RD,TaoT,TaoD,TaoB
 	TgohneF=zeros(N,1);
 	TgohneF(TD~=0)=sqrt(1/(4*pi*muet*Set))./TaoT(TD~=0);
 	% B
-	BgohneF=zeros(N,N);
-	odi=sum(BD~=0);
-	odi=kron(odi',ones(1,N));
-	BgohneF(BD~=0)=gain./odi(BD~=0);
+	% BgohneF=zeros(N,N);
+	% odi=sum(BD~=0);
+	% odi=kron(odi',ones(1,N));
+	% BgohneF(BD~=0)=gain./odi(BD~=0);
 	% R
 	muer=mean(TaoR(TaoR~=0));
 	Ser=sum(TaoR(TaoR~=0).^-2);

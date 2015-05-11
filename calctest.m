@@ -34,14 +34,14 @@ function calctest(index)
     
 	N=length(SX);
 
-	% BD=zeros(N,N);
-	% BD=Form_BMatrix(Mapdata,SX,SY,N);
-	% BD=BD+BD';
-	% TaoB=BD/(3*10^8);
-	% BgohneF=zeros(N,N);
-	% odi=sum(BD~=0);
-	% odi=kron(odi',ones(1,N));
-	% BgohneF(BD~=0)=gain./odi(BD~=0);
+	BD=zeros(N,N);
+	BD=Form_BMatrix(Mapdata,SX,SY,N);
+	BD=BD+BD';
+	TaoB=BD/(3*10^8);
+	BgohneF=zeros(N,N);
+	odi=sum(BD~=0);
+	odi=kron(odi',ones(1,N));
+	BgohneF(BD~=0)=gain./odi(BD~=0);
 
 	% Bandwidth=20
 
@@ -61,14 +61,15 @@ function calctest(index)
 				% disp(RY);
 				% disp(index);
 
-
-				[TD,DD,BD,RD]=LOSDisMatrix(TX,TY,SX,SY,RX,RY,HT,1.8,Mapdata);
+				TD=zeros(N,1);
+				DD=0;
+				RD=zeros(1,N);
+				[TD,DD,RD]=Form_3Matrix(TX,TY,SX,SY,RX,RY,HT,1.8,Mapdata);
 				TaoT=TD/(3*10^8);
 				TaoD=DD/(3*10^8);
-				TaoB=BD/(3*10^8);
 				TaoR=RD/(3*10^8);
 
-				[TgohneF,DgohneF,BgohneF,RgohneF]=FormGohneF(TD,DD,BD,RD,TaoT,TaoD,TaoB,TaoR,0.8);
+				[TgohneF,DgohneF,RgohneF]=FormGohneF(TD,DD,BD,RD,TaoT,TaoD,TaoB,TaoR,gain);
 				% disp('begin parallel loop');
 				% for n=1:1:loop;
 					% F=Fmin+deltaF*n;
