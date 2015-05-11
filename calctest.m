@@ -43,12 +43,12 @@ function calctest(index)
 	odi=kron(odi',ones(1,N));
 	BgohneF(BD~=0)=gain./odi(BD~=0);
 
-	Bandwidth=20
+	% Bandwidth=20
 
-	Fmin=(Freq-Bandwidth/2)*10^6;
-	loop=2000;
-	deltaF=(Bandwidth/loop)*10^6;
-	HannWindow=hann(loop)';
+	% Fmin=(Freq-Bandwidth/2)*10^6;
+	loop=1;
+	% deltaF=(Bandwidth/loop)*10^6;
+	% HannWindow=hann(loop)';
 
 
 	% profiling +settings.scale
@@ -71,18 +71,19 @@ function calctest(index)
 
 				[TgohneF,DgohneF,RgohneF]=FormGohneF(TD,DD,BD,RD,TaoT,TaoD,TaoB,TaoR,gain);
 				disp('begin parallel loop');
-				parfor n=1:1:loop;
-					F=Fmin+deltaF*n;
+				% for n=1:1:loop;
+					% F=Fmin+deltaF*n;
+					F=Freq;
 					D=DgohneF/F.*exp(-1j*2*pi.*TaoD*F);
 					T=TgohneF/sqrt(F).*exp(-1j*2*pi.*TaoT*F);
 					B=BgohneF.*exp(-1j*2*pi.*TaoB*F);
 					R=RgohneF/sqrt(F).*exp(-1j*2*pi.*TaoR*F);
-					H(n)=D+R/(eye(N)-B)*T;
-				end
+					H=D+R/(eye(N)-B)*T;
+				% end
 				disp('parallel loop ended')
-				Hex=H.*HannWindow;
-				h=ifft(Hex);
-				Saved_Data.XYA(RX,RY,index,:)=[h];
+				% Hex=H.*HannWindow;
+				% h=ifft(Hex);
+				Saved_Data.XYA(RX,RY,index,:)=[H];
 				if rem(RY-ClipY,25)==0
 					disp('saving');
 					% save the data and the calculation status every 5 points
@@ -98,5 +99,6 @@ function calctest(index)
 		Saved_Data.y=ClipY;
 		% show progress
 	end
+	save Saved_Data.mat Saved_Data -v7.3;
 end
 
